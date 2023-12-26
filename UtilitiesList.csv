@@ -1,0 +1,7 @@
+name;type;size;cost;power;value
+Hyper Shields;Shield;S;12;45;220
+Hyper Shields;Shield;M;22;90;550
+Hyper Shields;Shield;L;44;180;1320
+Neutronium Armor;Armor;S;22;0;290
+Neutronium Armor;Armor;M;44;0;725
+Neutronium Armor;Armor;L;88;0;1740
