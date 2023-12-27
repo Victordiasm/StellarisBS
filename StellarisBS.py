@@ -1,4 +1,4 @@
-from itertools import combinations
+from itertools import combinations_with_replacement, combinations, permutations, product
 from copy import deepcopy
 
 class Army:
@@ -13,6 +13,8 @@ class Ship:
         self.size = int(csv_list[2])
         self.power = 0
         self.hull = float(csv_list[3])
+        self.armor = 0
+        self.shield = 0
         self.evasion = float(csv_list[4][0:-1])/100
         self.weapon_slots = {}
         for i in range(0, len(csv_list[5]), 2):
@@ -20,35 +22,42 @@ class Ship:
                 self.weapon_slots.update({csv_list[5][i+1] : self.weapon_slots.get(csv_list[5][i+1]) + int(csv_list[5][i])})
             else:
                 self.weapon_slots.update({csv_list[5][i+1] : int(csv_list[5][i])})           
-        self.utilities_slots = {}
+        self.utility_slots = {}
         for i in range(0, len(csv_list[6]), 2):
-            if(csv_list[6][i] in self.utilities_slots):
-                self.utilities_slots.update({csv_list[6][i+1] : self.utilities_slots.get(csv_list[6][i+1]) + int(csv_list[6][i])})
+            if(csv_list[6][i] in self.utility_slots):
+                self.utility_slots.update({csv_list[6][i+1] : self.utility_slots.get(csv_list[6][i+1]) + int(csv_list[6][i])})
             else:
-                self.utilities_slots.update({csv_list[6][i+1] : int(csv_list[6][i])})
+                self.utility_slots.update({csv_list[6][i+1] : int(csv_list[6][i])})
         self.weapon_list = []
-        self.utilities_list = []
+        self.utility_list = []
         self.weapon_available_slots = self.weapon_slots.copy()
-        self.utilities_available_slots = self.utilities_slots.copy()
+        self.utility_available_slots = self.utility_slots.copy()
     
     def add_weapon(self, weapon):
         self.weapon_list.append(weapon)
-        self.weapon_available_slots.update({weapon.type:self.weapon_available_slots.get(weapon.type) - 1})
+        self.weapon_available_slots.update({weapon.size:self.weapon_available_slots.get(weapon.size) - 1})
         self.power += weapon.power
     def add_weapon_list(self, weapon_list):
-        for weapon in weapon_list:
-            self.add_weapon(weapon)
+        for wp_list in weapon_list:
+            for wp in wp_list:
+                self.add_weapon(wp)
 
     def add_utility(self, utility):
-        self.weapon_list.append(utility)
-        self.utilities_available_slots.update({utility.type:self.utilities_available_slots.get(utility.type) - 1})
+        self.utility_list.append(utility)
+        self.utility_available_slots.update({utility.size:self.utility_available_slots.get(utility.size) - 1})
         self.power += utility.power
+        if(utility.type == "Shield"): self.shield += utility.value
+        elif(utility.type == "Armor"): self.armor += utility.value
+    def add_utility_list(self, utility_list):
+        for ut_list in utility_list:
+            for ut in ut_list:
+                self.add_utility(ut)
 
     def get_weapon_slot(self, slot):
         return self.weapon_available_slots.get(slot)
     
     def get_utility_slot(self, slot):
-        return self.utilities_available_slots.get(slot)
+        return self.utility_available_slots.get(slot)
 
 
 class Weapon:
@@ -95,6 +104,45 @@ def open_csv(name):
         return(csv_list)
 
 
+def write_csv(name, header, object_list):
+    with open(name, "w", encoding="utf8") as file:
+        for s in header:
+            file.write(s)
+            if header.index(s) == len(header) - 1: file.write('\n')
+            else: file.write(';')
+        for row in range(len(object_list)):
+            for column in range(len(object_list[row])):
+                file.write(str(object_list[row][column]))
+                if column == len(object_list[row]) - 1: file.write('\n')
+                else: file.write(';')
+
+#["name", "sections", "size", "power", "hull", "armor", "shield", "evasion", "weapons", "utilities"]
+def ship_to_list(object_list):
+    ship_list = []
+    for ship in object_list:
+        ship_row = []
+        ship_row.append(ship.name)
+        ship_row.append(ship.sections)
+        ship_row.append(ship.size)
+        ship_row.append(ship.power)
+        ship_row.append(ship.hull)
+        ship_row.append(ship.armor)
+        ship_row.append(ship.shield)
+        ship_row.append(ship.evasion)
+        weapon_list = ""
+        for i in range(len(ship.weapon_list)):
+            weapon_list += (ship.weapon_list[i].name + "_" + ship.weapon_list[i].size)
+            if i != len(ship.weapon_list) - 1: weapon_list += ','
+        ship_row.append(weapon_list)        
+        utility_list = ""
+        for i in range(len(ship.utility_list)):
+            utility_list += (ship.utility_list[i].name + "_" + ship.utility_list[i].size)
+            if i != len(ship.utility_list) - 1: utility_list += ','
+        ship_row.append(utility_list)
+        ship_list.append(ship_row)
+    return ship_list
+            
+
 def get_csv_list(name, type):
     object_list = []
     csv_object_list = open_csv(name)
@@ -110,8 +158,41 @@ def get_csv_list(name, type):
     return object_list
 
 
+def create_army(ship_list, weapon_list, utility_list):
+    
+    army_list = []
+    for raw_ship in ship_list:
+        weapon_slot_key_list = raw_ship.weapon_slots.keys()
+        utility_slot_key_list = raw_ship.utility_slots.keys()
 
+        weapon_comb_list = []
+        for key in weapon_slot_key_list:
+            slots = raw_ship.get_weapon_slot(key)
+            temp_list = [tmp for tmp in weapon_list if tmp.size == key]
+            comb_list = list(combinations_with_replacement(temp_list, slots))
+            weapon_comb_list.append(comb_list)
+        ship_wp_comb = []
+        for element in product(*weapon_comb_list):
+            ship_wp_comb.append(element)
 
+        utility_comb_list = []
+        for key in utility_slot_key_list:
+            slots = raw_ship.get_utility_slot(key)
+            temp_list = [ut for ut in utility_list if ut.size == key]
+            comb_list = list(combinations_with_replacement(temp_list, slots))
+            utility_comb_list.append(comb_list)
+        ship_ut_comb = []
+        for element in product(*utility_comb_list):
+            ship_ut_comb.append(element)
+
+        ship_product = list(product(ship_wp_comb, ship_ut_comb))
+
+        for sp in ship_product:
+            ship = deepcopy(raw_ship)
+            ship.add_weapon_list(sp[0])
+            ship.add_utility_list(sp[1])
+            army_list.append(ship)
+    return army_list  
 
 
 def main():
@@ -120,7 +201,9 @@ def main():
     weapon_list = get_csv_list("WeaponList.csv", "weapon")
     utility_list = get_csv_list("UtilitiesList.csv", "utility")
 
-    create_army(ship_list, weapon_list, utility_list)
+    army = create_army(ship_list, weapon_list, utility_list)
+    header = ["name", "sections", "size", "power", "hull", "armor", "shield", "evasion", "weapons", "utilities"]
+    write_csv("ArmyList.csv", header, ship_to_list(army))
 
 
 if __name__ == "__main__":
