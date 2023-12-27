@@ -2,6 +2,7 @@ from itertools import combinations_with_replacement, combinations, permutations,
 from copy import deepcopy
 from multiprocessing import Pool, cpu_count
 
+
 def create_ship(raw_ship):
     weapon_slot_key_list = raw_ship.weapon_slots.keys()
     utility_slot_key_list = raw_ship.utility_slots.keys()
@@ -34,6 +35,7 @@ def create_ship(raw_ship):
     print("Finished ship -", raw_ship.name)
     return army_list
 
+
 def init_worker(weapon_list, utility_list):
     # declare scope of a new global variable
     global wp_list
@@ -42,8 +44,9 @@ def init_worker(weapon_list, utility_list):
     wp_list = weapon_list
     ut_list = utility_list
 
-def create_army(ship_list, weapon_list, utility_list):   
+
+def create_army(ship_list, weapon_list, utility_list):
     cores = cpu_count()
-    with Pool(initializer=init_worker, initargs=(weapon_list, utility_list), processes = 10) as pool:
+    with Pool(initializer=init_worker, initargs=(weapon_list, utility_list), processes=10) as pool:
         army_list = pool.map(create_ship, ship_list, chunksize=1)
-    return army_list  
+    return army_list
