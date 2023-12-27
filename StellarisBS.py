@@ -1,7 +1,6 @@
-from itertools import combinations_with_replacement, combinations, permutations, product
-from copy import deepcopy
 from multiprocessing import Pool, cpu_count
 import create_army
+import evaluator
 
 
 class Army:
@@ -72,6 +71,9 @@ class Ship:
     def get_utility_slot(self, slot):
         return self.utility_available_slots.get(slot)
 
+    def get_weapons_ready(self, time):
+        return [wp for wp in self.weapon_list if wp.ready_to_fire(time)]
+
 
 class Weapon:
     def __init__(self, csv_list) -> None:
@@ -86,15 +88,31 @@ class Weapon:
         self.range = csv_list[8]
         self.accuracy = float(csv_list[9])
         self.traking = float(csv_list[10])
-        self.shield_mod = float(csv_list[11])
-        self.armor_mod = float(csv_list[12])
-        self.hull_mod = float(csv_list[13])
-        self.skip_shield = float(csv_list[14])
-        self.skip_armor = float(csv_list[15])
-        self.sizeS_mod = float(csv_list[16])
-        self.sizeM_mod = float(csv_list[17])
-        self.sizeL_mod = float(csv_list[18])
-        self.sizeX_mod = float(csv_list[19])
+        self.ut_mods = {"Shield": float(csv_list[11]), "Armor": float(
+            csv_list[12]), "Hull": float(csv_list[13])}
+        self.skip_mod = {"Shield": float(
+            csv_list[14]), "Armor": float(csv_list[15])}
+        self.size_mod = {"S": float(csv_list[16]), "M": float(
+            csv_list[17]), "L": float(csv_list[18]), "X": float(csv_list[19])}
+        self.last_fire = 0
+
+    def get_size_mod(self, size):
+        return self.size_mod.get(size)
+
+    def get_ut_mod(self, ut_type):
+        return self.ut_mods.get(ut_type)
+
+    def get_skip_mod(self, ut_type):
+        return self.skip_mod.get(ut_type)
+
+    def ready_to_fire(self, time):
+        if self.last_fire == 0:
+            return True
+        else:
+            return time - self.last_fire >= self.cooldown
+
+    def fire_weapon(self, time):
+        self.last_fire = time
 
 
 class Utility:
@@ -186,10 +204,10 @@ def main():
     weapon_list = get_csv_list("WeaponList.csv", "weapon")
     utility_list = get_csv_list("UtilitiesList.csv", "utility")
 
-    army = create_army.create_army(ship_list, weapon_list, utility_list)
-    header = ["name", "sections", "size", "power", "hull",
-              "armor", "shield", "evasion", "weapons", "utilities"]
-    write_csv("ArmyList.csv", header, ship_to_list(army))
+    # army = create_army.create_army(ship_list, weapon_list, utility_list)
+    # header = ["name", "sections", "size", "power", "hull",
+    #           "armor", "shield", "evasion", "weapons", "utilities"]
+    # write_csv("ArmyList.csv", header, ship_to_list(army))
 
 
 if __name__ == "__main__":
