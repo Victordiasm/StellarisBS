@@ -38,7 +38,8 @@ Cruiser;Torpedo-Missile-Gunship;4;1800;10%;2S1G2S2G2S;4M4M3A
 Battleship;Artillery-Artillery-Artillery;8;3000;5%;2L3L1L;3L3L2A
 Battleship;Artillery-Artillery-Broadside;8;3000;5%;2L3L2M;3L3L3A
 Battleship;Artillery-Broadside-Artillery;8;3000;5%;2L2M2L1L;3L3L2A
-Battleship;Artillery-Broadside-Broadside;8;3000;5%;2L2M2L2M;3L3L3ABattleship;Artillery-Artillery-Artillery;8;3000;5%;2L3L1L;3L3L2A
+Battleship;Artillery-Broadside-Broadside;8;3000;5%;2L2M2L2M;3L3L3A
+Battleship;Artillery-Artillery-Artillery;8;3000;5%;2L3L1L;3L3L2A
 Battleship;Artillery-Carrier-Broadside;8;3000;5%;2L2S2P2H1L;3L3L3A
 Battleship;Artillery-Carrier-Artillery;8;3000;5%;2L2S2P2H2M;3L3L2A
 Battleship;Artillery-Hangar-Broadside;8;3000;5%;2L4M1H2M;3L3L3A
@@ -46,7 +47,7 @@ Battleship;Artillery-Hangar-Artillery;8;3000;5%;2L4M1H2M;3L3L2A
 Battleship;Broadside-Artillery-Artillery;8;3000;5%;2S1M1L3L1L;3L3L2A
 Battleship;Broadside-Artillery-Broadside;8;3000;5%;2S1M1L3L2M;3L3L3A
 Battleship;Broadside-Broadside-Artillery;8;3000;5%;2S1M1L2M2L1L;3L3L2A
-Battleship;Broadside-Broadside-Broadside;8;3000;5%;2S1M1L2M2L2M;3L3L3ABattleship;Artillery-Artillery-Artillery;8;3000;5%;2L3L1L;3L3L2A
+Battleship;Broadside-Broadside-Broadside;8;3000;5%;2S1M1L2M2L2M;3L3L3A
 Battleship;Broadside-Carrier-Broadside;8;3000;5%;2S1M1L2S2P2H1L;3L3L3A
 Battleship;Broadside-Carrier-Artillery;8;3000;5%;2S1M1L2S2P2H2M;3L3L2A
 Battleship;Broadside-Hangar-Broadside;8;3000;5%;2S1M1L4M1H2M;3L3L3A
@@ -54,7 +55,7 @@ Battleship;Broadside-Hangar-Artillery;8;3000;5%;2S1M1L4M1H2M;3L3L2A
 Battleship;Hangar-Artillery-Artillery;8;3000;5%;1M2P1H3L1L;3L3L2A
 Battleship;Hangar-Artillery-Broadside;8;3000;5%;1M2P1H3L2M;3L3L3A
 Battleship;Hangar-Broadside-Artillery;8;3000;5%;1M2P1H2M2L1L;3L3L2A
-Battleship;Hangar-Broadside-Broadside;8;3000;5%;1M2P1H2M2L2M;3L3L3ABattleship;Artillery-Artillery-Artillery;8;3000;5%;2L3L1L;3L3L2A
+Battleship;Hangar-Broadside-Broadside;8;3000;5%;1M2P1H2M2L2M;3L3L3A
 Battleship;Hangar-Carrier-Broadside;8;3000;5%;1M2P1H2S2P2H1L;3L3L3A
 Battleship;Hangar-Carrier-Artillery;8;3000;5%;1M2P1H2S2P2H2M;3L3L2A
 Battleship;Hangar-Hangar-Broadside;8;3000;5%;1M2P1H4M1H2M;3L3L3A
@@ -62,7 +63,7 @@ Battleship;Hangar-Hangar-Artillery;8;3000;5%;1M2P1H4M1H2M;3L3L2A
 Battleship;Spinal Mount-Artillery-Artillery;8;3000;5%;1X3L1L;3L3L2A
 Battleship;Spinal Mount-Artillery-Broadside;8;3000;5%;1X3L2M;3L3L3A
 Battleship;Spinal Mount-Broadside-Artillery;8;3000;5%;1X2M2L1L;3L3L2A
-Battleship;Spinal Mount-Broadside-Broadside;8;3000;5%;1X2M2L2M;3L3L3ABattleship;Artillery-Artillery-Artillery;8;3000;5%;2L3L1L;3L3L2A
+Battleship;Spinal Mount-Broadside-Broadside;8;3000;5%;1X2M2L2M;3L3L3A
 Battleship;Spinal Mount-Carrier-Broadside;8;3000;5%;1X2S2P2H1L;3L3L3A
 Battleship;Spinal Mount-Carrier-Artillery;8;3000;5%;1X2S2P2H2M;3L3L2A
 Battleship;Spinal Mount-Hangar-Broadside;8;3000;5%;1X4M1H2M;3L3L3A
