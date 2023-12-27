@@ -47,6 +47,6 @@ def init_worker(weapon_list, utility_list):
 
 def create_army(ship_list, weapon_list, utility_list):
     cores = cpu_count()
-    with Pool(initializer=init_worker, initargs=(weapon_list, utility_list), processes=10) as pool:
+    with Pool(initializer=init_worker, initargs=(weapon_list, utility_list), processes=cores) as pool:
         army_list = pool.map(create_ship, ship_list, chunksize=1)
     return army_list
