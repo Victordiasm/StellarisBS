@@ -1,6 +1,7 @@
 from itertools import combinations_with_replacement, combinations, permutations, product
 from copy import deepcopy
 from multiprocessing import Pool, cpu_count
+import StellarisBS
 
 
 def create_ship(raw_ship):
@@ -50,3 +51,20 @@ def create_army(ship_list, weapon_list, utility_list):
     with Pool(initializer=init_worker, initargs=(weapon_list, utility_list), processes=cores) as pool:
         army_list = pool.map(create_ship, ship_list, chunksize=1)
     return army_list
+
+
+def main():
+    ship_dict = StellarisBS.get_csv_list("ShipList.csv", "ship")
+    weapon_dict = StellarisBS.get_csv_list("WeaponList.csv", "weapon")
+    utility_dict = StellarisBS.get_csv_list("UtilitiesList.csv", "utility")
+
+    army = create_army(
+        list(ship_dict.values()), list(weapon_dict.values()), list(utility_dict.values()))
+    header = ["name", "sections", "size", "hull", "evasion", "weapon_slots",
+              "utilities_slot", "armor", "shield", "weapons", "utilities"]
+    StellarisBS.write_csv("ArmyList.csv", header,
+                          StellarisBS.ship_to_list(army))
+
+
+if __name__ == "__main__":
+    main()
