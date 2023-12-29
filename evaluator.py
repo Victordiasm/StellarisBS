@@ -41,12 +41,6 @@ def attack(weapon, ship):
     armor = ship.armor / armor_mods
     hull = ship.hull / hull_mods
 
-    
-
-    if(shield > 0)
-    
-
-
     ship.shield = ship_shield * shield_mods
     ship.armor = ship_armor * armor_mods
     ship.hull = ship_hull * hull_mods
