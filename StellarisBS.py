@@ -1,5 +1,7 @@
 from multiprocessing import Pool, cpu_count
 from itertools import combinations_with_replacement, combinations, permutations, product
+import create_army
+import evaluator
 
 
 class Fleet:
@@ -17,23 +19,33 @@ class Ship_model:
             self.hull = float(csv_list[3])
             self.armor = 0
             self.shield = 0
-            self.evasion = float(csv_list[4][0:-1])/100
+            self.evasion = float(csv_list[4][0:-1]) / 100
             self.weapon_slots = {}
             for i in range(0, len(csv_list[5]), 2):
-                if (csv_list[5][i+1] in self.weapon_slots):
+                if csv_list[5][i + 1] in self.weapon_slots:
                     self.weapon_slots.update(
-                        {csv_list[5][i+1]: self.weapon_slots.get(csv_list[5][i+1]) + int(csv_list[5][i])})
+                        {
+                            csv_list[5][i + 1]: self.weapon_slots.get(
+                                csv_list[5][i + 1]
+                            )
+                            + int(csv_list[5][i])
+                        }
+                    )
                 else:
-                    self.weapon_slots.update(
-                        {csv_list[5][i+1]: int(csv_list[5][i])})
+                    self.weapon_slots.update({csv_list[5][i + 1]: int(csv_list[5][i])})
             self.utility_slots = {}
             for i in range(0, len(csv_list[6]), 2):
-                if (csv_list[6][i] in self.utility_slots):
+                if csv_list[6][i] in self.utility_slots:
                     self.utility_slots.update(
-                        {csv_list[6][i+1]: self.utility_slots.get(csv_list[6][i+1]) + int(csv_list[6][i])})
+                        {
+                            csv_list[6][i + 1]: self.utility_slots.get(
+                                csv_list[6][i + 1]
+                            )
+                            + int(csv_list[6][i])
+                        }
+                    )
                 else:
-                    self.utility_slots.update(
-                        {csv_list[6][i+1]: int(csv_list[6][i])})
+                    self.utility_slots.update({csv_list[6][i + 1]: int(csv_list[6][i])})
             self.weapon_list = []
             self.utility_list = []
             self.weapon_available_slots = self.weapon_slots.copy()
@@ -46,23 +58,33 @@ class Ship_model:
             self.hull = float(csv_list[3])
             self.armor = float(csv_list[7])
             self.shield = float(csv_list[8])
-            self.evasion = float(csv_list[4][0:-1])/100
+            self.evasion = float(csv_list[4][0:-1]) / 100
             self.weapon_slots = {}
             for i in range(0, len(csv_list[5]), 2):
-                if (csv_list[5][i+1] in self.weapon_slots):
+                if csv_list[5][i + 1] in self.weapon_slots:
                     self.weapon_slots.update(
-                        {csv_list[5][i+1]: self.weapon_slots.get(csv_list[5][i+1]) + int(csv_list[5][i])})
+                        {
+                            csv_list[5][i + 1]: self.weapon_slots.get(
+                                csv_list[5][i + 1]
+                            )
+                            + int(csv_list[5][i])
+                        }
+                    )
                 else:
-                    self.weapon_slots.update(
-                        {csv_list[5][i+1]: int(csv_list[5][i])})
+                    self.weapon_slots.update({csv_list[5][i + 1]: int(csv_list[5][i])})
             self.utility_slots = {}
             for i in range(0, len(csv_list[6]), 2):
-                if (csv_list[6][i] in self.utility_slots):
+                if csv_list[6][i] in self.utility_slots:
                     self.utility_slots.update(
-                        {csv_list[6][i+1]: self.utility_slots.get(csv_list[6][i+1]) + int(csv_list[6][i])})
+                        {
+                            csv_list[6][i + 1]: self.utility_slots.get(
+                                csv_list[6][i + 1]
+                            )
+                            + int(csv_list[6][i])
+                        }
+                    )
                 else:
-                    self.utility_slots.update(
-                        {csv_list[6][i+1]: int(csv_list[6][i])})
+                    self.utility_slots.update({csv_list[6][i + 1]: int(csv_list[6][i])})
             self.weapon_available_slots = self.weapon_slots.copy()
             self.utility_available_slots = self.utility_slots.copy()
             self.weapon_list = []
@@ -77,7 +99,8 @@ class Ship_model:
     def add_weapon(self, weapon):
         self.weapon_list.append(weapon)
         self.weapon_available_slots.update(
-            {weapon.size: self.weapon_available_slots.get(weapon.size) - 1})
+            {weapon.size: self.weapon_available_slots.get(weapon.size) - 1}
+        )
         self.power += weapon.power
 
     def add_weapon_list(self, weapon_list):
@@ -88,11 +111,12 @@ class Ship_model:
     def add_utility(self, utility):
         self.utility_list.append(utility)
         self.utility_available_slots.update(
-            {utility.size: self.utility_available_slots.get(utility.size) - 1})
+            {utility.size: self.utility_available_slots.get(utility.size) - 1}
+        )
         self.power += utility.power
-        if (utility.type == "Shield"):
+        if utility.type == "Shield":
             self.shield += utility.value
-        elif (utility.type == "Armor"):
+        elif utility.type == "Armor":
             self.armor += utility.value
 
     def add_utility_list(self, utility_list):
@@ -170,12 +194,18 @@ class Weapon:
         self.range = csv_list[8]
         self.accuracy = float(csv_list[9])
         self.traking = float(csv_list[10])
-        self.ut_mods = {"Shield": float(csv_list[11]), "Armor": float(
-            csv_list[12]), "Hull": float(csv_list[13])}
-        self.skip_mod = {"Shield": float(
-            csv_list[14]), "Armor": float(csv_list[15])}
-        self.size_mod = {"S": float(csv_list[16]), "M": float(
-            csv_list[17]), "L": float(csv_list[18]), "X": float(csv_list[19])}
+        self.ut_mods = {
+            "Shield": float(csv_list[11]),
+            "Armor": float(csv_list[12]),
+            "Hull": float(csv_list[13]),
+        }
+        self.skip_mod = {"Shield": float(csv_list[14]), "Armor": float(csv_list[15])}
+        self.size_mod = {
+            "S": float(csv_list[16]),
+            "M": float(csv_list[17]),
+            "L": float(csv_list[18]),
+            "X": float(csv_list[19]),
+        }
         self.last_fire = 0
 
     def get_size_mod(self, size):
@@ -214,13 +244,13 @@ class Utility:
 
 
 def open_csv(name):
-    with open(name, 'r', encoding='utf8') as file:
+    with open(name, "r", encoding="utf8") as file:
         text = file.read()
-        csv_list = text.split('\n')
+        csv_list = text.split("\n")
         csv_list.pop(0)
         for i in range(len(csv_list)):
-            csv_list[i] = csv_list[i].split(';')
-        return (csv_list)
+            csv_list[i] = csv_list[i].split(";")
+        return csv_list
 
 
 def write_csv(name, header, object_list):
@@ -228,20 +258,16 @@ def write_csv(name, header, object_list):
         for s in header:
             file.write(s)
             if header.index(s) == len(header) - 1:
-                file.write('\n')
+                file.write("\n")
             else:
-                file.write(';')
+                file.write(";")
         for row in range(len(object_list)):
             for column in range(len(object_list[row])):
                 file.write(str(object_list[row][column]))
                 if column == len(object_list[row]) - 1:
-                    file.write('\n')
+                    file.write("\n")
                 else:
-                    file.write(';')
-
-# name;sections;size;hull;evasion;weapon_slots;utilities_slot
-# name;sections;size;power;hull;armor;shield;evasion;weapons;utilities
-# name;sections;size;hull;evasion;weapon_slots;utilities_slot;armor;shield;weapons;utilities
+                    file.write(";")
 
 
 def ship_to_list(object_list):
@@ -260,17 +286,17 @@ def ship_to_list(object_list):
             ship_row.append(ship.shield)
             weapon_list = ""
             for i in range(len(ship.weapon_list)):
-                weapon_list += (ship.weapon_list[i].name +
-                                "_" + ship.weapon_list[i].size)
+                weapon_list += ship.weapon_list[i].name + "_" + ship.weapon_list[i].size
                 if i != len(ship.weapon_list) - 1:
-                    weapon_list += ','
+                    weapon_list += ","
             ship_row.append(weapon_list)
             utility_list = ""
             for i in range(len(ship.utility_list)):
-                utility_list += (ship.utility_list[i].name +
-                                 "_" + ship.utility_list[i].size)
+                utility_list += (
+                    ship.utility_list[i].name + "_" + ship.utility_list[i].size
+                )
                 if i != len(ship.utility_list) - 1:
-                    utility_list += ','
+                    utility_list += ","
             ship_row.append(utility_list)
             sp_list.append(ship_row)
     return sp_list
@@ -297,50 +323,23 @@ def get_csv_list(name, type):
 
 
 def get_ship_list(ship):
-    with open("ArmyList.csv", "r", encoding='utf8') as file:
+    with open("ArmyList.csv", "r", encoding="utf8") as file:
         ship_list = []
         line = file.readline()
         found_ship = True
-        while (found_ship):
+        while found_ship:
             line = file.readline()
             line = line.replace("\n", "")
             line_list = line.split(";")
             found_ship = line_list[0] == ship
-            if (found_ship):
+            if found_ship:
                 ship_list.append(Ship_model(line_list))
     return ship_list
 
 
 def main():
-    # army_list = get_csv_list("FleetList.csv", "Fleet")
+    return
 
-    # army = create_army.create_army(
-    #     list(ship_dict.values()), list(weapon_dict.values()), list(utility_dict.values()))
-    # header = ["name", "sections", "size", "hull", "evasion", "weapon_slots",
-    #           "utilities_slot", "armor", "shield", "weapons", "utilities"]
-    # write_csv("ArmyList.csv", header, ship_to_list(army))
-
-    # winners_dict = {}
-    # for battle in ship_comb:
-    #     winner = evaluator.evaluate_combat(battle)
-    #     name = winner[0].get_ship_fullname()
-    #     if name in winners_dict:
-    #         winners_dict.get(name).get("time").append(winner[1])
-    #         winners_dict.get(name).get("hull").append(winner[0].hull)
-    #         winners_dict.get(name).get("armor").append(winner[0].armor)
-    #         winners_dict.get(name).get("shield").append(winner[0].shield)
-    #     else:
-    #         winners_dict.update({name: {"time": [winner[1]], "hull": [
-    #                             winner[0].hull], "armor": [winner[0].armor], "shield": [winner[0].shield]}})
-    print(2)
-
-
-global ship_dict
-global weapon_dict
-global utility_dict
-ship_dict = get_csv_list("ShipList.csv", "ship")
-weapon_dict = get_csv_list("WeaponList.csv", "weapon")
-utility_dict = get_csv_list("UtilitiesList.csv", "utility")
 
 if __name__ == "__main__":
     main()
